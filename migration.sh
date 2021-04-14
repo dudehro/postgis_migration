@@ -91,6 +91,9 @@ function prepare_host(){
 		mkdir -p $DUMP_DIR_HOST_NEW
 		chown gisadmin.gisadmin $DUMP_DIR_HOST_NEW
 	fi
+
+	cp env_and_volumes_13.1 /home/gisadmin/etc/postgres/
+
 }
 
 function start_new_container(){
