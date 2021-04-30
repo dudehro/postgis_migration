@@ -111,24 +111,30 @@ function dump_old_db_copy_dump(){
 
 	i=0
 
+	echo "Dumpe DBs:"
+	while read DB
+	do
+		echo "$DB"
+	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
+
 	#alle Datenbanken mit Schemen und Daten
 	while read DB
 	do
 		if [ $i -lt 3 ]; then
 			OPTION_F="${DUMP_DIR}/schema_data.${DB}.dump"
 			echo "Dump DB ${DB} nach ${OPTION_F}"
-			docker exec pgsql-server bash -c "pg_dump -U postgres --create --exclude-table='shp_export_*' -f ${OPTION_F} \"${DB}\" "
+			docker exec pgsql-server bash -c "pg_dump -U postgres --create -Fc --exclude-table='shp_export_*' -f ${OPTION_F} \"${DB}\" "
 			docker exec pgsql-server bash -c "sed -i -e 's/\(SET default_with_oids = true;\|SET default_with_oids = false;\)//' \"$OPTION_F\" "
 
 			i=$((i+1))
 		fi
 	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
 
-	cp -r "$DUMP_DIR_HOST_OLD"/* "$DUMP_DIR_HOST_NEW"/
+#	cp -r "$DUMP_DIR_HOST_OLD"/* "$DUMP_DIR_HOST_NEW"/
 	#docker cp  "$DUMP_DIR_HOST_OLD"/* "$DUMP_DIR_CONTAINER"/
-	
-	echo "Inhalt von $DUMP_DIR_HOST_NEW"
-	ls -alh $DUMP_DIR_HOST_NEW
+
+#	echo "Inhalt von $DUMP_DIR_HOST_NEW"
+#	ls -alh $DUMP_DIR_HOST_NEW
 }
 
 function restore_dump(){
