@@ -100,6 +100,13 @@ function start_new_container(){
 	dcm run pgsql ${PGSQL_MAJOR_VERSION}
 }
 
+function list_databases(){
+	while read DB
+	do
+		echo "$DB"
+	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
+}
+
 function dump_old_db_copy_dump(){
 	DUMP_DIR=${DUMP_DIR_CONTAINER}
 
@@ -109,25 +116,13 @@ function dump_old_db_copy_dump(){
 	echo "Dump Rollen und Tablespace nach ${DUMP_DIR}"
 	docker exec pgsql-server bash -c "pg_dumpall -U postgres --globals-only -f ${DUMP_DIR}/roles_tablespaces.dump"
 
-	i=0
-
-	echo "Dumpe DBs:"
-	while read DB
-	do
-		echo "$DB"
-	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
-
 	#alle Datenbanken mit Schemen und Daten
 	while read DB
 	do
-		if [ $i -lt 3 ]; then
-			OPTION_F="${DUMP_DIR}/schema_data.${DB}.dump"
-			echo "Dump DB ${DB} nach ${OPTION_F}"
-			docker exec pgsql-server bash -c "pg_dump -U postgres --create -Fc --exclude-table='shp_export_*' -f ${OPTION_F} \"${DB}\" "
-			docker exec pgsql-server bash -c "sed -i -e 's/\(SET default_with_oids = true;\|SET default_with_oids = false;\)//' \"$OPTION_F\" "
-
-			i=$((i+1))
-		fi
+		OPTION_F="${DUMP_DIR}/schema_data.${DB}.dump"
+		echo "Dump DB ${DB} nach ${OPTION_F}"
+		docker exec pgsql-server bash -c "pg_dump -U postgres --create -Fc --exclude-table='shp_export_*' -f ${OPTION_F} \"${DB}\" "
+		docker exec pgsql-server bash -c "sed -i -e 's/\(SET default_with_oids = true;\|SET default_with_oids = false;\)//' \"$OPTION_F\" "
 	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
 
 #	cp -r "$DUMP_DIR_HOST_OLD"/* "$DUMP_DIR_HOST_NEW"/
@@ -141,10 +136,16 @@ function restore_dump(){
 	DUMP_DIR=/var/www/pg_dump
 
 	#1. Rollen + Tablespace einlesen
-	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "psql -U postgres -f ${DUMP_DIR}/roles_tablespaces.dump 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log" 
+	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "psql -U postgres -f ${DUMP_DIR}/roles_tablespaces.dump 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
 
 	#2. einzelne DB-Dumps einlesen
 	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -I {} psql -U postgres -f {} 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
+}
+
+function strip_postgis_functions(){
+#	perl /usr/share/postgresql/9.6/contrib/postgis-2.3/postgis_restore.pl fc_dump/
+	DUMP_DIR=/var/www/pg_dump
+	docker exec pgsql-server bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -i perl /usr/share/postgresql/9.6/contrib/postgis-2.3/postgis_restore.pl {} > {}_striped"
 }
 
 init_paths_vars
@@ -159,17 +160,25 @@ case $1 in
 	dump)
 		dump_old_db_copy_dump
 	;;
+	strip-postgis)
+		strip_postgis_functions
+	;;
 	start-new-db)
 		start_new_container
 	;;
 	restore)
 		restore_dump
 	;;
+	ls-db)
+		list_databases
+	;;
 	*)
 		echo	"verfügbare Aufrufe:"
 		echo	"paths"
 		echo	"mkdirs"
+		echo	"ls-db"
 		echo	"dump"
 		echo	"start-new-db"
+		echo	"strip-postgis"
 	;;
 esac
