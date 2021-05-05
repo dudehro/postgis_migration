@@ -13,6 +13,29 @@ if [[ -z $PGSQL_MAJOR_VERSION ]] || [[ -z $POSTGIS_VERSION ]]; then
 	exit 1
 fi
 
+function help(){
+cat<<"EOF"
+paths
+	listet die benoetigten Pfade auf
+ls-db
+	listet zu dumpende Datenbanken auf
+mkdirs
+	erstellt alle benoetigten Verzeichnisse
+dump
+	erstellt Dump im custom-Format
+strip-postgis
+	optional, entfernt postgis-Objekte aus custom-Text Dump
+convert
+	Custom-Format Dumps werden zu Plain-Text Dumps
+strip-oid
+	optional, entfernt SET default_with_oids aus plain-Text Dump
+start-new-db
+	startet neuen Container
+restore
+	stellt Plain-Text Dump im neuen Container her
+EOF
+}
+
 function init_paths_vars(){
 
 	if [ ! -f $KVWMAP_SERVER_CONFIG ] ; then
@@ -122,7 +145,6 @@ function dump_old_db_copy_dump(){
 		OPTION_F="${DUMP_DIR}/schema_data.${DB}.dump"
 		echo "Dump DB ${DB} nach ${OPTION_F}"
 		docker exec pgsql-server bash -c "pg_dump -U postgres --create -Fc --exclude-table='shp_export_*' -f ${OPTION_F} \"${DB}\" "
-		docker exec pgsql-server bash -c "sed -i -e 's/\(SET default_with_oids = true;\|SET default_with_oids = false;\)//' \"$OPTION_F\" "
 	done < <(docker exec pgsql-server bash -c "psql -U postgres -t -c \"select distinct datname from pg_catalog.pg_database where datname not like 'template%';\"")
 
 #	cp -r "$DUMP_DIR_HOST_OLD"/* "$DUMP_DIR_HOST_NEW"/
@@ -138,14 +160,39 @@ function restore_dump(){
 	#1. Rollen + Tablespace einlesen
 	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "psql -U postgres -f ${DUMP_DIR}/roles_tablespaces.dump 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
 
+
 	#2. einzelne DB-Dumps einlesen
-	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -I {} psql -U postgres -f {} 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
+ 	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -I {} psql -U postgres -f {} 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
+#	docker exec pgsql-server-"$PGSQL_MAJOR_VERSION" bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -i pg_restore -U postgres -d postgres -C -O {} 1>> "$DUMP_DIR"/restore.log  2>> "$DUMP_DIR"/restore_error.log"
+
+}
+
+
+function convert_dump_format(){
+	echo "converting custom-format dumps into plain-text dumps"
+        while read DUMP_FILE
+        do
+                echo $DUMP_FILE
+                docker exec pgsql-server bash -c "pg_restore -Cc -f ${DUMP_FILE}_plain  \"$DUMP_FILE\" "
+        done < <(docker exec pgsql-server bash -c "find ${DUMP_DIR_CONTAINER} -type f -name \"schema_data.*.dump\" ")
+}
+
+function strip_withoid(){
+	echo "stripping \"SET default_with_oids\" from plain-text dumps"
+	DUMP_DIR=/var/www/pg_dump
+	while read DUMP_FILE
+	do
+		echo $DUMP_FILE
+		docker exec pgsql-server bash -c "sed -i -e 's/\(SET default_with_oids = true;\|SET default_with_oids = false;\)//' \"$DUMP_FILE\" "
+	done < <(docker exec pgsql-server bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" ")
 }
 
 function strip_postgis_functions(){
-#	perl /usr/share/postgresql/9.6/contrib/postgis-2.3/postgis_restore.pl fc_dump/
+	echo "stripping postgis-objects from custom-format dumps"
 	DUMP_DIR=/var/www/pg_dump
-	docker exec pgsql-server bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -i perl /usr/share/postgresql/9.6/contrib/postgis-2.3/postgis_restore.pl {} > {}_striped"
+	#	/usr/share/postgresql/9.6/contrib/postgis-2.5/postgis_restore.pl
+	#	/usr/share/postgresql/9.6/contrib/postgis-2.3/postgis_restore.pl
+	docker exec pgsql-server bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -i perl /usr/share/postgresql/9.6/contrib/postgis-2.5/postgis_restore.pl {} > {}"
 }
 
 init_paths_vars
@@ -158,27 +205,27 @@ case $1 in
 		prepare_host
 	;;
 	dump)
-		dump_old_db_copy_dump
+		dump_old_db_copy_dump $2
 	;;
 	strip-postgis)
 		strip_postgis_functions
 	;;
+	strip-oid)
+		strip_withoid
+	;;
 	start-new-db)
 		start_new_container
 	;;
+	convert)
+		convert_dump_format
+	;;
 	restore)
-		restore_dump
+		restore_dump $2
 	;;
 	ls-db)
 		list_databases
 	;;
 	*)
-		echo	"verfügbare Aufrufe:"
-		echo	"paths"
-		echo	"mkdirs"
-		echo	"ls-db"
-		echo	"dump"
-		echo	"start-new-db"
-		echo	"strip-postgis"
+		help
 	;;
 esac
