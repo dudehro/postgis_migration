@@ -33,6 +33,8 @@ start-new-db
 	startet neuen Container
 restore
 	stellt Plain-Text Dump im neuen Container her
+run pgsql [image]
+	startet einen Container mit dem angegebenen Image
 EOF
 }
 
@@ -195,7 +197,111 @@ function strip_postgis_functions(){
 	docker exec pgsql-server bash -c "find ${DUMP_DIR} -type f -name \"schema_data.*.dump\" | xargs -i perl /usr/share/postgresql/9.6/contrib/postgis-2.5/postgis_restore.pl {} > {}"
 }
 
-init_paths_vars
+function run_pgsql_container(){
+
+  DB_ROOT=$(pwd)
+
+  if [ -n "$1" ]; then
+    #Image wurde als Parameter übergeben
+    IMAGETAG=$1
+    IMAGE=$(echo $IMAGETAG | cut -d ':' -f 1)
+    TAG=$(echo $IMAGETAG | cut -d ':' -f 2)
+    PG_VERSION=$(echo $TAG | cut -d '-' -f 1)
+    POSTGIS_VERSION=$(echo $TAG | cut -d '-' -f 2)
+
+    #env_and_volumes auslesen
+    ENVVOL_IMAGE=$(sed -rn 's/^PGSQL_IMAGE=([^\n]+)$/\1/p' postgres/env_and_volumes)
+    ENVVOL_TAG=$(sed -rn 's/^PGSQL_IMAGE_TAG=([^\n]+)$/\1/p' postgres/env_and_volumes)
+
+    #vergleichen
+    if [[ $IMAGE != $ENVVOL_IMAGE ]] || [[ $TAG != $ENVVOL_TAG ]]; then
+      echo "Konfiguration unterscheidet sich von alter und wird neu geschrieben"
+      echo "altes Image: $ENVVOL_IMAGE:$ENVVOL_TAG"
+      echo "neues Image: $IMAGE:$TAG"
+
+      #slash für sed escapen
+      IMAGE_REPLACE=$(printf '%s\n' "$IMAGE" | sed -e 's/[\/&]/\\&/g')
+      sed -ir "s/^[#]*\s*PGSQL_IMAGE=.*/PGSQL_IMAGE=$IMAGE_REPLACE/" postgres/env_and_volumes
+      sed -ir "s/^[#]*\s*PGSQL_IMAGE_TAG=.*/PGSQL_IMAGE_TAG=$TAG/" postgres/env_and_volumes
+    fi
+
+  else
+    #Image aus env_and_volumes auslesen
+    echo "kein Image übergeben, verwende bisherige Konfiguration"
+    IMAGE=$(sed -rn 's/^PGSQL_IMAGE=([^\n]+)$/\1/p' postgres/env_and_volumes)
+    TAG=$(sed -rn 's/^PGSQL_IMAGE_TAG=([^\n]+)$/\1/p' postgres/env_and_volumes)
+
+  fi
+
+  echo "Starte Image $IMAGE:$TAG"
+
+  #existieren die Verzeichnisse?
+  PG_DATA_DIR=$DB_ROOT/postgresql/$IMAGE_$TAG/data
+  PG_LOG_DIR=$DB_ROOT/postgresql/$IMAGE_$TAG/log
+
+  if [ ! -d $PG_DATA_DIR ]; then
+    mkdir -p $PG_DATA_DIR
+    chown 999.root $PG_DATA_DIR
+    chmod 700 $PG_DATA_DIR
+  fi
+
+  if [ ! -d $PG_LOG_DIR ]; then
+    mkdir -p $PG_LOG_DIR
+    chown 999.root $PG_LOG_DIR
+    chmod 700 $PG_LOG_DIR
+  fi
+
+  #läuft ein Container mit Tag?
+  if [[ $(docker ps --format '{{.Names}}' -f name=pgsql-server-$TAG) == "" ]]; then
+
+    source postgres/env_and_volumes
+
+    if [ "${START_WITH_DCM}" = "true" ] ; then
+      echo "\ Erzeuge und Starte container pgsql-$TAG"
+
+      if [ -z "$pgsql_config" ] ; then
+        pgsql_config=""
+      fi
+
+      if [ -n "$PGSQL_HOST_PORT" ]; then
+        pgsql_port="$PGSQL_PORT:5432"
+      else
+        pgsql_port="5432:5432"
+      fi
+
+      echo "
+      docker run \
+        -h ${SERVER_NAME}-PGSQL-SERVER-${TAG} \
+        --name pgsql-server-${TAG} \
+        --network=kvwmap_neue_container \
+        --net-alias=pgsql \
+        --restart=always \
+        $pgsql_env_vars \
+        $pgsql_volumes \
+        -p $pgsql_port \
+        -d ${IMAGE}:${TAG} \
+        $pgsql_config
+      "
+
+      docker run \
+        -h ${SERVER_NAME}-PGSQL-SERVER-${TAG} \
+        --name pgsql-server-${TAG} \
+        --network=kvwmap_neue_container \
+        --net-alias=pgsql \
+        --restart=always \
+        $pgsql_env_vars \
+        $pgsql_volumes \
+        -p $pgsql_port \
+        -d ${IMAGE}:${TAG} \
+        $pgsql_config
+
+    fi
+
+  fi
+
+}
+
+#init_paths_vars
 
 case $1 in
 	paths)
@@ -225,6 +331,12 @@ case $1 in
 	ls-db)
 		list_databases
 	;;
+        run)
+          case $2 in
+            pgsql) run_pgsql_container $3
+	    ;;
+          esac
+        ;;
 	*)
 		help
 	;;
