@@ -17,7 +17,19 @@ SELECT	'PROC_FUNC_TRIGGER'
 		,para.schemaname
 FROM	pg_proc		p
 JOIN	parameters	para	ON	p.pronamespace = para.schemaoid
+JOIN    pg_language     l	ON	p.prolang = l.oid
 WHERE	upper(p.prosrc) LIKE '%' || para.searchstring || '%'
+
+--no procedures from extensions
+AND NOT EXISTS (	SELECT  1
+                        FROM    pg_catalog.pg_depend    d
+                        WHERE   d.objid = p.oid
+                        AND     d.classid::regclass::Text = 'pg_proc'
+                        AND     d.deptype IN ('e','i')
+                 )
+--nothing from builtin language
+AND     l.lanispl = true
+
 UNION
 SELECT	'MAT_VIEW'
 		,m.matviewname
