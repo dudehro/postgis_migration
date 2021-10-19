@@ -11,6 +11,7 @@ SELECT 	'VIEW'			as objtype
 FROM	pg_views 	v
 JOIN	parameters	p	on	v.schemaname = p.schemaname
 WHERE	upper(v.definition) LIKE '%' || p.searchstring || '%'
+AND     upper(v.defintion) NOT LIKE '%AS OID%'
 UNION
 SELECT	'PROC_FUNC_TRIGGER'
 		,proname
