@@ -1,3 +1,3 @@
 #!/bin/bash
 
-psql -U postgres -t -c "select distinct datname from pg_catalog.pg_database where datname not like 'template%';"
+psql -U kvwmap -d kvwmapsp -t -c "select distinct datname from pg_catalog.pg_database where datname not like 'template%';"
