@@ -1,0 +1,16 @@
+https://dba.stackexchange.com/questions/259359/eliminating-oids-while-upgrading-postgresql-from-9-4-to-12
+
+    Before upgrade, on the old database:
+
+    ALTER TABLE has_oids ADD newoid bigint NOT NULL;
+    UPDATE has_oids SET newoid = oid;
+    ALTER TABLE has_oids SET WITHOUT OIDS;
+
+    After upgrade, on the new database:
+
+    ALTER TABLE has_oids RENAME newoid TO oid;
+    CREATE SEQUENCE has_oids_oid_seq OWNED BY has_oids.oid;
+    ALTER TABLE has_oids ALTER oid SET DEFAULT nextval('has_oids_oid_seq');
+    SELECT setval('has_oids_oid_seq', ???);
+
+
