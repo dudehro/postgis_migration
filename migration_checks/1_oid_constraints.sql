@@ -1,8 +1,10 @@
-SELECT  ns.nspname      AS "schema"
+SELECT  'c'             AS "kind"
+        ,ns.nspname     AS "schema"
         ,c.relname      AS "table"
-        ,attr.attname   AS "column"
-        ,con.conname    AS "constraint"
-        ,'ALTER TABLE IF EXISTS ' || ns.nspname || '.' || c.relname || ' ADD CONSTRAINT ' || con.conname || ' ' || pg_get_constraintdef(con.oid) || ';' alterstmt
+--        ,attr.attname   AS "column"
+--        ,con.conname    AS "constraint"
+        ,'ALTER TABLE IF EXISTS ' || ns.nspname || '.' || c.relname || ' ADD CONSTRAINT ' || con.conname || ' ' || pg_get_constraintdef(con.oid) || ';' ddl_create
+        ,'ALTER TABLE IF EXISTS ' || ns.nspname || '.' || c.relname || ' DROP CONSTRAINT IF EXISTS ' || con.conname || ';'      ddl_drop
 FROM    pg_catalog.pg_class c
 JOIN    pg_catalog.pg_namespace ns      ON ns.oid = c.relnamespace
 JOIN    pg_catalog.pg_constraint con    ON c.oid = con.conrelid
