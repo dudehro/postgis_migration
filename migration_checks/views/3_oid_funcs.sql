@@ -7,6 +7,6 @@ SELECT ns.nspname AS schema,
 FROM pg_proc p
 JOIN pg_namespace ns ON p.pronamespace = ns.oid
 WHERE (ns.nspname <> ALL (ARRAY['pg_catalog'::name, 'information_schema'::name, 'public'::name]))
-AND upper(pg_get_functiondef(p.oid)) ~~ '%.OID%'::text
+AND regexp_replace(upper(pg_get_functiondef(p.oid)), 'PG_[A-Z]*\.OID', '', 'g') ~~ '%.OID%'::text
 AND p.proisagg = false
 ORDER BY ns.nspname;
