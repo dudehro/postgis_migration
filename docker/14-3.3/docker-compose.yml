@@ -1,0 +1,17 @@
+version: '3'
+services:
+    postgres-postgis:
+        build: ./
+        container_name: pgsql-14-3.3
+        environment:
+        - POSTGRES_PASSWORD=postgres
+        volumes:
+        - ./data:/var/lib/postgresql/data
+        - ./logs:/var/www/logs/pgsql
+        - ./tools:/tools
+#        ports:
+#        - 5432:5432
+networks:
+    default:
+        name: docker_static-network
+        external: true
