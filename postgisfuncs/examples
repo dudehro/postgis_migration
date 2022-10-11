@@ -1,0 +1,3 @@
+# # 1417; 1255 23048091 FUNCTION public _postgis_index_extent(regclass, text) kvwmap
+# # 1417; 1255 23048091 FUNCTION public box2d(regclass, text) kvwmap
+# # 1417; 1255 23048091 FUNCTION public box3d(regclass, text) kvwmap
