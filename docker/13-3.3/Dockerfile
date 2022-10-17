@@ -1,11 +1,11 @@
 FROM postgis/postgis:13-3.3
 
+#locale
 RUN localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8
 ENV LANG de_DE.utf8
 RUN locale -a
 
-RUN pg_config --libdir
-
+#apt
 RUN apt-get update && apt-get install -y \
     postgresql-13-mysql-fdw \
     postgresql-13-pgrouting \
@@ -21,8 +21,11 @@ RUN apt-get update && apt-get install -y \
     htop \
 #    glances \
     wget \
-    nano
+    nano \
+    tzdata \
+    tree
 
+#Postgres Extensions
 ADD sources /usr/local
 
 WORKDIR /usr/local
@@ -45,3 +48,8 @@ WORKDIR /usr/local/oracle_fdw-ORACLE_FDW_2_4_0
 RUN make && \
     make install
 
+#Timezone
+RUN rm /etc/localtime
+RUN ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
+WORKDIR /

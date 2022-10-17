@@ -12,6 +12,5 @@ services:
 #        ports:
 #        - 5432:5432
 networks:
-    default:
-        name: docker_static-network
+    docker_static-network:
         external: true
