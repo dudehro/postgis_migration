@@ -39,12 +39,12 @@ WORKDIR /download
 #RUN wget https://download.osgeo.org/postgis/source/postgis-2.1.7.tar.gz 
 #RUN tar -xf postgis-2.1.7.tar.gz
 
-COPY ./source/postgis-2.1.7/ /download/postgis-2.1.7
-WORKDIR /download/postgis-2.1.7
+#COPY ./source/postgis-2.1.7/ /download/postgis-2.1.7
+#WORKDIR /download/postgis-2.1.7
 
-RUN ./configure 
+#RUN ./configure 
 #--with-jsondir=/usr/local
 #--with-jsondir=/download/json-c
 # --with-projdir=/download/proj-4.9.3
-RUN make
-RUN make install
+#RUN make
+#RUN make install

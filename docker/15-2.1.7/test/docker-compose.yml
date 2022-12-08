@@ -1,0 +1,18 @@
+version: '3'
+services:
+    postgres-postgis:
+        build: ../build/
+        container_name: postgis217
+        command: [ "sleep", "10000000" ]
+        environment:
+        - POSTGRES_PASSWORD=postgres
+        volumes:
+        - ./data:/var/lib/postgresql/data
+        - ./logs:/var/www/logs/pgsql
+        - ../build/source/postgis-2.1.7:/download/postgis-2.1.7
+#use default        - ./config/postgresql.conf:/var/lib/postgresql/config/postgresql.conf
+#use default        - ./config/pg_hba.conf:/var/lib/postgresql/config/pg_hba.conf
+#        - ./config/.pgpass:/root/.pgpass
+#        - ./pgbackrest:/pgbackrest       
+#        ports:
+#        - 5432:5432
