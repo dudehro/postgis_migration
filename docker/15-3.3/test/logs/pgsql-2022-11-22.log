@@ -1,0 +1,141 @@
+ 2022-11-22 14:19:40.807 CET [1] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 14:19:40.807 CET [1] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ERROR: [041]: unable to get info for path/file '/tmp/pgbackrest/local.stop': [13] Permission denied
+ 2022-11-22 14:31:00.352 CET [49] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 14:31:00.352 CET [49] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ 2022-11-22 14:31:04.987 CET [1] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 14:31:04.987 CET [1] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ERROR: [103]: unable to find a valid repository:
+       repo1: [FileMissingError] unable to load info file '/pgbackrest/repo/archive/local/archive.info' or '/pgbackrest/repo/archive/local/archive.info.copy':
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info' for read
+       FileMissingError: unable to open missing file '/pgbackrest/repo/archive/local/archive.info.copy' for read
+       HINT: archive.info cannot be opened but is required to push/get WAL segments.
+       HINT: is archive_command configured correctly in postgresql.conf?
+       HINT: has a stanza-create been performed?
+       HINT: use --no-archive-check to disable archive checks during backup if you have an alternate archiving scheme.
+ 2022-11-22 14:37:17.004 CET [1] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 14:37:17.004 CET [1] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.
+ 2022-11-22 14:38:52.125 CET [1] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 14:38:52.125 CET [1] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.
+ 2022-11-22 15:22:19.441 CET [1] LOG:  Logausgabe nach stderr endet
+ 2022-11-22 15:22:19.441 CET [1] TIPP:  Die weitere Logausgabe geht an Logziel »csvlog«.

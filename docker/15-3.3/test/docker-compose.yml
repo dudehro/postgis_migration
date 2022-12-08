@@ -1,0 +1,17 @@
+version: '3'
+services:
+    postgres-postgis:
+        image: gkaemmert/postgis:15-3.3
+        container_name: pgbackresttest
+        environment:
+        - POSTGRES_PASSWORD=postgres
+        volumes:
+        - ./data:/var/lib/postgresql/data
+        - ./logs:/var/www/logs/pgsql
+#use default        - ./config/postgresql.conf:/var/lib/postgresql/config/postgresql.conf
+#use default        - ./config/pg_hba.conf:/var/lib/postgresql/config/pg_hba.conf
+#        - ./config/.pgpass:/root/.pgpass
+        - ./pgbackrest:/pgbackrest
+
+#        ports:
+#        - 5432:5432
